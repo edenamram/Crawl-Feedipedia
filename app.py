@@ -16,7 +16,7 @@ def export_feedpedia_data():
     soup = BeautifulSoup(page_feed_ipedia.text, 'html.parser')
 
     print("getting main page items")
-    feed_items = feedipedia.get_feed_items(soup)[:5]
+    feed_items = feedipedia.get_feed_items(soup)
 
     extra_attributes =feedipedia.feedcrawler.get_extra_attributes(soup)
 
