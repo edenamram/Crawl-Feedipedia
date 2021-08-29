@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import json
-import feedipedia
+import crawler
 
 FeedPediaURL = "https://www.feedipedia.org/"
 FeedPediaFeedUrl = FeedPediaURL + "/content/feeds?category=All"
