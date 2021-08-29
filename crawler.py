@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import feedcrawler
 
+
 FeedPediaURL = "https://www.feedipedia.org/"
 FeedPediaFeedUrl = FeedPediaURL + "/content/feeds?category=All"
 
