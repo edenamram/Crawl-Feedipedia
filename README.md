@@ -3,5 +3,6 @@ The program is used to crawl Feedpedia website and export the data to json file.
 
 How to run:
 
-1.Run the command:
+1. Install packages : 'pip install bs4'
+2.Run the command:
   python app.py
