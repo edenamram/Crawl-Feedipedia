@@ -1,36 +1,38 @@
 import requests
 from bs4 import BeautifulSoup
-import json
-import crawler
+import feedcrawler
+
 
 FeedPediaURL = "https://www.feedipedia.org/"
 FeedPediaFeedUrl = FeedPediaURL + "/content/feeds?category=All"
-ExportFileName = "feedpedia_data.json"
 
-full_feed_items = []
-dic = {}
+# list of all URL text and href
+def get_feed_items(soup):
 
-def export_feedpedia_data():
+    feed_elements = []
 
-    page_feed_ipedia = requests.get(FeedPediaFeedUrl)
-    soup = BeautifulSoup(page_feed_ipedia.text, 'html.parser')
+    html_feed_elements = soup.select('.views-view-grid.cols-2 tr a')
+    for html_feed_element in html_feed_elements:
+        feed_item_dic = {}
+        feed_item_dic['text'] = html_feed_element.text
+        feed_item_dic['href'] = FeedPediaURL + html_feed_element.get('href')
+        feed_elements.append(feed_item_dic)
 
-    print("getting main page items")
-    feed_items = feedipedia.get_feed_items(soup)
+    return feed_elements
 
-    extra_attributes =feedipedia.feedcrawler.get_extra_attributes(soup)
+# get all feed link and run all functions
+def enrich_feed_item(feed_item_dic):
+    enriched_feed_item = {}
+    feed_element_html = requests.get(feed_item_dic['href'])
+    soap = BeautifulSoup(feed_element_html.text, 'html.parser')
 
-    for feed_item in feed_items:
-        full_feed_items.append(feedipedia.enrich_feed_item(feed_item))
+    enriched_feed_item['name'] = feed_item_dic['text']
+    enriched_feed_item['href'] = feed_item_dic['href']
+    enriched_feed_item['common_names'] = feedcrawler.get_common_names(soap)
+    enriched_feed_item['synonyms'] = feedcrawler.get_synonyms(soap)
+    enriched_feed_item['related_feeds'] = feedcrawler.get_related_feeds(soap)
+    enriched_feed_item['description'] = feedcrawler.get_description(soap)
+    enriched_feed_item['extra_data'] = feedcrawler.get_extra_data(soap)
+    enriched_feed_item['chemicals'] = feedcrawler.get_tables(soap)
 
-    dic['feed_items'] = full_feed_items
-    dic['extra'] = extra_attributes
-    print("writing data to file")
-
-    with open(ExportFileName, 'w') as f:
-        json.dump(dic, f)
-
-    print("data is exported to " + ExportFileName)
-    print("finished")
-
-export_feedpedia_data()
+    return enriched_feed_item
