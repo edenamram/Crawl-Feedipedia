@@ -25,6 +25,8 @@ def enrich_feed_item(feed_item_dic):
     feed_element_html = requests.get(feed_item_dic['href'])
     soap = BeautifulSoup(feed_element_html.text, 'html.parser')
 
+    enriched_feed_item['name'] = feed_item_dic['text']
+    enriched_feed_item['href'] = feed_item_dic['href']
     enriched_feed_item['common_names'] = feedcrawler.get_common_names(soap)
     enriched_feed_item['synonyms'] = feedcrawler.get_synonyms(soap)
     enriched_feed_item['related_feeds'] = feedcrawler.get_related_feeds(soap)
